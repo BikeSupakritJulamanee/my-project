@@ -7,7 +7,7 @@ function App() {
 
   return (
     <>
-      <h1>App.jsx</h1>
+      <h1>instagram</h1>
       <Link to="/login" className='btn btn-success' >Login</Link>
       <Link to="/register" className='btn btn-primary' >Register</Link>
     </>

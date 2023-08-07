@@ -1,30 +1,14 @@
 import React, { useState, useEffect } from 'react';
-
-// add router
-import { useNavigate } from 'react-router-dom';
-
-// add UserAuthContext
 import { useUserAuth } from '../context/UserAuthContext';
-
-// add react-bootstrap
-import { Button } from 'react-bootstrap';
-
-// add firebase/firestore
-import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
-
-// add db from firestore
-import { db } from '../firebase';
+import Nav_Bar from './Nav_Bar';
+import { Container, Button } from 'react-bootstrap';
+import { db } from '../firebase'; // Make sure to import db
+import { query, collection, where, getDocs } from 'firebase/firestore'; // Make sure to import necessary firestore functions
 
 function Home() {
+  const { user, logOut } = useUserAuth(); // Include logOut from useUserAuth
+  const [username, setUsername] = useState([]);
 
-  const { logOut, user } = useUserAuth();
-  console.log(user);
-  const navigate = useNavigate();
-
-  const [newTodo, setNewTodo] = useState("");
-  const [todos, setTodos] = useState([]);
-
-  // logOut function
   const handleLogout = async () => {
     try {
       await logOut();
@@ -34,78 +18,36 @@ function Home() {
     }
   }
 
-  // ad data to database
-  const addTodo = async (e) => {
-    e.preventDefault();
-    try {
-      const docRef = await addDoc(collection(db, "todos"), {
-        todo: newTodo,
-        id: user.uid
-      })
-      console.log("Document written with ID: ", docRef.id)
-      setNewTodo("");
-    } catch (e) {
-      console.error("error adding document: ", e);
-    }
-  }
-
-  // show data from database
-  const fetchTodos = async () => {
-
+  const fetchusername = async () => {
     try {
       const querySnapshot = await getDocs(
-        query(collection(db, "todos"), where("id", "==", user.uid))
+        query(collection(db, "User"), where("email", "==", user.email))
       );
       const newData = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
-      setTodos(newData);
+      setUsername(newData);
       console.log(newData);
     } catch (error) {
       console.error("Error fetching documents: ", error);
     }
   };
 
-  // call fetchTodos()
   useEffect(() => {
-    fetchTodos();
-  }, [user]); 
+    fetchusername();
+  }, [user]);
 
   return (
-
-    <div>
-      <div>
-        <h2>Welcome to the homepage</h2>
-        <p>Hi, {user.email}</p>
-        <p>UID: {user.uid}</p>
-        <Button onClick={handleLogout} variant='danger'>Logout</Button>
-      </div>
-
-      <br /> 
-      <br /> 
-      <br /> 
-      <br />
-
-      <div>
-        <h1 className='title'>Todo-App</h1>
-        <input
-          type="text"
-          placeholder='What do you have to do today'
-          value={newTodo}
-          onChange={(e) => setNewTodo(e.target.value)}
-        />
-        <button type='submit' onClick={addTodo} >
-          Submit
-        </button>
-
-        {todos.map((todo) => (
-          <div key={todo.id}>
-            <p>{todo.todo}</p>
-          </div>
+    <>
+      <Nav_Bar />
+      <Container>
+        {username.map((todo) => (
+          <div key={todo.id}>{todo.username}</div>
         ))}
-      </div>
-    </div>
+        <Button onClick={handleLogout} variant='danger'>Logout</Button>
+      </Container>
+    </>
   )
 }
 

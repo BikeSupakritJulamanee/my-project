@@ -22,6 +22,12 @@ import {
 import Register from './component/Register.jsx'
 import Login from './component/Login.jsx'
 import Home from './component/Home.jsx'
+import Searching from './component/Searching.jsx'
+import Message from './component/Message.jsx'
+import Notifications from './component/Notifications.jsx'
+import Create_Post from './component/Create_Post.jsx'
+import Profile from './component/Profile.jsx'
+
 
 // add back end router
 import BackEnd from './back-end/BackEnd.jsx';
@@ -42,6 +48,26 @@ const router = createBrowserRouter([
   {
     path: '/home',
     element: <ProtectedRoute><Home /></ProtectedRoute>
+  },
+  {
+    path: '/searching',
+    element: <Searching />
+  },
+  {
+    path: '/message',
+    element: <Message />
+  },
+  {
+    path: '/notifications',
+    element: <Notifications />
+  },
+  {
+    path: '/create_post',
+    element: <Create_Post />
+  },
+  {
+    path: '/profile',
+    element: <Profile />
   },
 
   {
