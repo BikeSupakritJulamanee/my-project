@@ -27,14 +27,21 @@ function Register() {
     }
 
     try {
-      const userDocRef = await addDoc(collection(db, 'User'), {
+      const userDocRef_Users = await addDoc(collection(db, 'User'), {
         email,
         username,
         phone_number,
-        password,
       });
 
-      console.log('Document written with ID:', userDocRef.id);
+      const userDocRef_Accounts = await addDoc(collection(db, 'Account'), {
+        email,
+        posts : 0,
+        followers : 0,
+        following : 0,
+        description : 'Write your description...',
+      });
+
+      console.log('Document written with ID:', userDocRef_Users.id);
 
       await signUp(email, password);
       navigate('/');
