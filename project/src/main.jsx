@@ -27,6 +27,7 @@ import Message from './component/Message.jsx'
 import Notifications from './component/Notifications.jsx'
 import Create_Post from './component/Create_Post.jsx'
 import Profile from './component/Profile.jsx'
+import Edit_Profile from './component/Edit_Profile.jsx';
 
 
 // add back end router
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
   {
     path: '/profile',
     element: <Profile />
+  },
+  {
+    path: '/edit_profile',
+    element: <Edit_Profile />
   },
 
   {

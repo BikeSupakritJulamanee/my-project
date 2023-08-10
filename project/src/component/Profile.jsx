@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Nav_Bar from './Nav_Bar';
-import { Container, Row, Col, Button, Image } from 'react-bootstrap';
+import { Container, Row, Col, Image } from 'react-bootstrap';
 import { useUserAuth } from '../context/UserAuthContext';
 import { getDocs, collection, query, where } from 'firebase/firestore';
-import { db } from '../firebase'; // Import your Firebase configuration and initialize it
+import { db } from '../firebase'; // Import your Firebase configuration and initialize itW
+import { Link } from 'react-router-dom';
 
 function Profile() {
   const { user } = useUserAuth();
@@ -57,9 +58,9 @@ function Profile() {
             <Row>
               <div>
                 <h4>{userData && userData.username}</h4>
-                <Button variant="secondary" size="sm" className="ms-3">
+                <Link to={'/edit_profile'} >
                   Edit Profile
-                </Button>
+                </Link>
               </div>
             </Row>
             <Row>
@@ -67,7 +68,7 @@ function Profile() {
               <Col>{accountData && `${accountData.followers} followers`}</Col>
               <Col>{accountData && `${accountData.following} following`}</Col>
             </Row>
-            <Row>{accountData && `${accountData.description} Descriptions`}</Row>
+            <Row>{accountData && `${accountData.bio}`}</Row>
           </Col>
         </Row>
       </Container>

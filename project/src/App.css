@@ -4,7 +4,61 @@
   /* padding: 2rem; */
   text-align: center;
 }
+.logo-img {
+  max-width: 40px;  
+  max-height: 40px;  
+}
+.container-centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.custom-button-style{
+  width: 190px !important;
+  height: 28px;
+  font-size: 12px !important;
+  background-color: #0095f6 !important;
+  color: #ffffff !important;
 
+}
+ 
+.frame {
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px,
+    rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+}
+.hr-text {
+  line-height: 1em;
+  position: relative;
+  outline: 0;
+  border: 0;
+  color: black;
+  text-align: center;
+  height: 1.5em;
+  opacity: .5;
+  &:before {
+    content: '';
+ 
+    background: linear-gradient(to right, transparent, #818078, transparent);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+  }
+  &:after {
+    content: attr(data-content);
+    position: relative;
+    display: inline-block;
+    color: black;
+
+    padding: 0 .5em;
+    line-height: 1.5em;
+  
+    color: #818078;
+    background-color: #fcfcfa;
+  }
+}
 
 /* .logo {
   height: 6em;

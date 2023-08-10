@@ -1,0 +1,24 @@
+#root {
+    /* max-width: 1280px; */
+    /* margin: 0 auto; */
+    /* padding: 2rem; */
+    text-align: center;
+  }
+
+  .custom-button-style{
+    width: 190px !important;
+    height: 28px;
+    font-size: 12px !important;
+    background-color: #0095f6 !important;
+    color: #ffffff !important;
+  
+  }
+
+  .frame {
+    box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px,
+      rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+  }
+  .input-small {
+    max-width: 260px; /* ปรับความกว้างของ input ตามต้องการ */
+    width: 100%;
+  }

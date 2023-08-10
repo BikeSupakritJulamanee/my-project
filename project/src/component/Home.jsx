@@ -4,7 +4,6 @@ import Nav_Bar from './Nav_Bar';
 import { Container, Button } from 'react-bootstrap';
 import { db } from '../firebase'; // Make sure to import db
 import { query, collection, where, getDocs } from 'firebase/firestore'; // Make sure to import necessary firestore functions
-
 function Home() {
   const { user, logOut } = useUserAuth(); // Include logOut from useUserAuth
   const [username, setUsername] = useState([]);

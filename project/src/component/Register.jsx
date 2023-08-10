@@ -5,6 +5,11 @@ import { useUserAuth } from '../context/UserAuthContext'; //useContext
 import { db } from '../firebase'; //database
 import { collection, addDoc } from 'firebase/firestore'; //firestore
 
+import "./style/Register.css";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+
 function Register() {
 
   const [error, setError] = useState('');
@@ -51,57 +56,77 @@ function Register() {
   };
 
   return (
-    <div>
-      <div className="row">
-        <div className="col-md-6 mx-auto">
-          <h2 className="mb-3">Register</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Control
-                type="email"
-                placeholder="Email address"
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </Form.Group>
+    <Container>
+    <br />
+    <br />
+    <Row>
+      <Col></Col>
+      <Col>
+        <Row className="frame">
+          <Col>
+            <br />
+            <h2 className="mb-3">Register</h2>
 
-            <Form.Group className="mb-3">
-              <Form.Control
-                type="text"
-                placeholder="Username"
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </Form.Group>
+            {error && <Alert variant="danger">{error}</Alert>}
+            <Form onSubmit={handleSubmit}>
+              <Form.Group
+                className="mb-3 d-flex justify-content-center"
+                controlId="formBasicEmail"
+              >
+                <Form.Control
+                  type="email"
+                  placeholder="Email address"
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="input-small "
+                />
+              </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Control
-                type="text"
-                placeholder="Phone number"
-                onChange={(e) => setPhoneNumber(e.target.value)}
-              />
-            </Form.Group>
+              <Form.Group className="mb-3 d-flex justify-content-center">
+                <Form.Control
+                  type="text"
+                  placeholder="Username"
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="input-small "
+                />
+              </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Form.Group>
+              <Form.Group className="mb-3 d-flex justify-content-center">
+                <Form.Control
+                  type="text"
+                  placeholder="Phone number"
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="input-small "
+                />
+              </Form.Group>
 
-            <div className="d-grid gap-2">
-              <Button variant="primary" type="submit">
-                SignUp
-              </Button>
+              <Form.Group
+                className="mb-3 d-flex justify-content-center"
+                controlId="formBasicPassword"
+              >
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="input-small "
+                />
+              </Form.Group>
+
+              <div className="d-grid gap-2 justify-content-center">
+                <Button className="custom-button-style" type="submit">
+                  SignUp
+                </Button>
+              </div>
+            </Form>
+
+            <div className="p-4 box mt-3 text-center">
+              Already have an account? <Link to="/login">Login</Link>
             </div>
-          </Form>
-
-          <div className="p-4 box mt-3 text-center">
-            Already have an account? <Link to="/login">Login</Link>
-          </div>
-        </div>
-      </div>
-    </div>
+          </Col>
+        </Row>
+      </Col>
+      <Col></Col>
+    </Row>
+  </Container>
   );
 }
 
