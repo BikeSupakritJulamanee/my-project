@@ -10,7 +10,7 @@ function Nav_Bar() {
         <div>
             <Navbar bg="light" data-bs-theme="light">
                 <Container>
-                    <Navbar.Brand href="#"> <div className='Brand' > instagram</div></Navbar.Brand>
+                    <Navbar.Brand href="#"> <div className='Brand' > ignore</div></Navbar.Brand>
                     <Nav className="me-auto">
                         <Nav.Link href="/home">Home</Nav.Link>
                         <Nav.Link href="/searching">Search</Nav.Link>

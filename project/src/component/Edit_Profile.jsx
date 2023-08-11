@@ -88,20 +88,26 @@ function Edit_Profile() {
                             </Modal.Header>
                             <Modal.Body>
                                 <Form.Group as={Row} className="mb-3" controlId="formUsername">
-                                    <Form.Label column sm={2}>Username</Form.Label>
-                                    <Col sm={10}>
+                                    <Form.Label column sm={1}>Username</Form.Label>
+
+                                    <Col sm={11}>
+
                                         <Form.Control
+                                            className="input-small"
+
                                             type="text"
                                             value={userData.username || ''}
                                             onChange={e => setUserData({ ...userData, username: e.target.value })}
                                         />
+
                                     </Col>
                                 </Form.Group>
                                 <Form.Group as={Row} className="mb-3" controlId="formBio">
-                                    <Form.Label column sm={2}>Bio</Form.Label>
-                                    <Col sm={10}>
+                                    <Form.Label column sm={1}  >Bio</Form.Label>
+                                    <Col sm={11} className="input-container">
                                         <Form.Control
-                                            type="text"
+                                            className="input-small-resize"
+                                            as="textarea" // เปลี่ยนจาก type="text" เป็น as="textarea"
                                             value={userData.bio || ''}
                                             onChange={e => setUserData({ ...userData, bio: e.target.value })}
                                         />
@@ -109,7 +115,7 @@ function Edit_Profile() {
                                 </Form.Group>
                             </Modal.Body>
                             <Modal.Footer>
-                                <Button variant="primary" type='submit'>Save changes</Button>
+                                <Button className="custom-button-style" type='submit'>Save changes</Button>
                             </Modal.Footer>
                         </Form>
                     </Modal.Dialog>

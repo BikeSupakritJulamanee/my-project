@@ -3,13 +3,26 @@ import Nav_Bar from './Nav_Bar';
 import { Container, Row, Col, Image } from 'react-bootstrap';
 import { useUserAuth } from '../context/UserAuthContext';
 import { getDocs, collection, query, where } from 'firebase/firestore';
-import { db } from '../firebase'; // Import your Firebase configuration and initialize itW
+import { storageRef, db } from '../firebase'; // Import your Firebase configuration and initialize itW
 import { Link } from 'react-router-dom';
+import { ref, uploadBytes, getDownloadURL, listAll } from 'firebase/storage';
 
 function Profile() {
   const { user } = useUserAuth();
   const [userData, setUserData] = useState(null);
-  const [accountData, setAccountData] = useState(null);
+  const [accountData, setAccountData] = useState([]);
+
+  const [imageList, setImageList] = useState([]);
+  const imageListRef = ref(storageRef, 'profile/');
+
+  const imgURL = imageList.find(url => url.includes(accountData.profile_image));
+
+  useEffect(() => {
+    listAll(imageListRef)
+      .then(response => Promise.all(response.items.map(item => getDownloadURL(item))))
+      .then(urls => setImageList(urls))
+      .catch(error => console.error('Error listing images:', error));
+  }, [user]);
 
   const fetchUserData = async () => {
     try {
@@ -52,7 +65,7 @@ function Profile() {
       <Container>
         <Row>
           <Col xs={4} className="d-flex justify-content-center align-items-center">
-            <Image src="../../img/img.png" roundedCircle style={{ width: '120px' }} />
+            <Image className='profile_img' src={imgURL} style={{ width: '120px', height: '120px' }} roundedCircle />
           </Col>
           <Col xs={8} style={{ textAlign: 'left' }}>
             <Row>
