@@ -43,7 +43,8 @@ function Register() {
         posts : 0,
         followers : 0,
         following : 0,
-        description : 'Write your description...',
+        bio : 'Write your description...',
+        image_profile : 'default_user_profile.png',
       });
 
       console.log('Document written with ID:', userDocRef_Users.id);

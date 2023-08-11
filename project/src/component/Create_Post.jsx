@@ -14,7 +14,7 @@ function Create_Post() {
     if (!imageUpload) return;
 
     try {
-      const imageRef = ref(storageRef, `uploads/${imageUpload.name}`);
+      const imageRef = ref(storageRef, `profile/${imageUpload.name}`);
       const snapshot = await uploadBytes(imageRef, imageUpload);
       const url = await getDownloadURL(snapshot.ref);
       setImageList((prev) => [...prev, url]); // Add the new URL to the list

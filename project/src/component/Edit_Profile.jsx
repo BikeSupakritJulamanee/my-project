@@ -14,55 +14,49 @@ function Edit_Profile() {
     const fileInputRef = useRef(null);
 
     const fetchUserData = async () => {
-        const fetchUserDataQuery = async (collectionName, stateSetter, property) => {
-            const querySnapshot = await getDocs(
-                query(collection(db, collectionName), where('email', '==', user.email))
-            );
-            if (!querySnapshot.empty) {
-                stateSetter(querySnapshot.docs[0].data()[property]);
-            }
+        const fetchData = async (collectionName, stateSetter, property) => {
+            const querySnapshot = await getDocs(query(collection(db, collectionName), where('email', '==', user.email)));
+            if (!querySnapshot.empty) stateSetter(querySnapshot.docs[0].data()[property]);
         };
 
-        fetchUserDataQuery('User', setEditedUsername, 'username');
-        fetchUserDataQuery('Account', setEditedBio, 'bio');
+        fetchData('User', setEditedUsername, 'username');
+        fetchData('Account', setEditedBio, 'bio');
     };
 
     useEffect(() => {
         fetchUserData();
     }, [user]);
 
+    const updateUserField = async (collectionName, property, value) => {
+        const querySnapshot = await getDocs(query(collection(db, collectionName), where('email', '==', user.email)));
+        if (!querySnapshot.empty) await updateDoc(querySnapshot.docs[0].ref, { [property]: value });
+    };
+
     const handleUpdate = async (e) => {
         e.preventDefault();
-
-        const updateUserField = async (collectionName, property, value) => {
-            const querySnapshot = await getDocs(
-                query(collection(db, collectionName), where('email', '==', user.email))
-            );
-
-            if (!querySnapshot.empty) {
-                const docRef = querySnapshot.docs[0].ref;
-                await updateDoc(docRef, { [property]: value });
-            }
-        };
-
         await updateUserField('User', 'username', editedUsername);
         await updateUserField('Account', 'bio', editedBio);
-
-        alert('updated')
+        alert('Updated');
         fetchUserData();
     };
 
     const handleFileChange = async (event) => {
         const selectedFile = event.target.files[0];
-
         if (selectedFile) {
-            const imageRef = ref(storageRef, `uploads/${selectedFile.name}`);
-            await uploadBytes(imageRef, selectedFile);
-            const url = await getDownloadURL(imageRef);
-            console.log('Image URL:', url);
-            alert('updated')
+            const imageRef = ref(storageRef, `profile/${selectedFile.name}`);
+            try {
+                await uploadBytes(imageRef, selectedFile);
+                const url = await getDownloadURL(imageRef);
+                console.log('Image URL:', url);
+                await updateUserField('Account', 'image_profile', selectedFile.name);
+                alert('Profile image updated successfully');
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                alert('An error occurred while updating the profile image: ' + error.message);
+            }
         }
     };
+
 
     return (
         <>
@@ -74,20 +68,12 @@ function Edit_Profile() {
                             <Modal.Header>
                                 <Row>
                                     <Col>
-                                        <Image className='profile_img' src="../../img/default_user_icon.png" roundedCircle />
+                                        <Image className='profile_img' src="../../img/default_user_profile.png" roundedCircle />
                                     </Col>
                                     <Col>
                                         <div>{user.email}</div>
-                                        <div className='change_pf_img_btn' onClick={() => fileInputRef.current.click()}>
-                                            Change your profile image
-                                        </div>
-                                        <input
-                                            type='file'
-                                            id='fileInput'
-                                            ref={fileInputRef}
-                                            style={{ display: 'none' }}
-                                            onChange={handleFileChange}
-                                        />
+                                        <div className='change_pf_img_btn' onClick={() => fileInputRef.current.click()}>Change your profile image</div>
+                                        <input type='file' id='fileInput' ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} />
                                     </Col>
                                 </Row>
                             </Modal.Header>
@@ -95,21 +81,13 @@ function Edit_Profile() {
                                 <Form.Group as={Row} className="mb-3" controlId="formUsername">
                                     <Form.Label column sm={2}>Username</Form.Label>
                                     <Col sm={10}>
-                                        <Form.Control
-                                            type="text"
-                                            value={editedUsername}
-                                            onChange={(e) => setEditedUsername(e.target.value)}
-                                        />
+                                        <Form.Control type="text" value={editedUsername} onChange={(e) => setEditedUsername(e.target.value)} />
                                     </Col>
                                 </Form.Group>
                                 <Form.Group as={Row} className="mb-3" controlId="formBio">
                                     <Form.Label column sm={2}>Bio</Form.Label>
                                     <Col sm={10}>
-                                        <Form.Control
-                                            type="text"
-                                            value={editedBio}
-                                            onChange={(e) => setEditedBio(e.target.value)}
-                                        />
+                                        <Form.Control type="text" value={editedBio} onChange={(e) => setEditedBio(e.target.value)} />
                                     </Col>
                                 </Form.Group>
                             </Modal.Body>
