@@ -2,42 +2,51 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Container, Button, Form, Modal, Image, Row, Col } from 'react-bootstrap';
 import { query, collection, where, getDocs, updateDoc } from 'firebase/firestore';
 import { useUserAuth } from '../context/UserAuthContext';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, listAll } from 'firebase/storage';
 import { storageRef, db } from '../firebase';
 import Nav_Bar from './Nav_Bar';
 import './style/Edit_Profile.css';
 
 function Edit_Profile() {
     const { user } = useUserAuth();
-    const [editedUsername, setEditedUsername] = useState('');
-    const [editedBio, setEditedBio] = useState('');
+    const [userData, setUserData] = useState({});
     const fileInputRef = useRef(null);
-
-    const fetchUserData = async () => {
-        const fetchData = async (collectionName, stateSetter, property) => {
-            const querySnapshot = await getDocs(query(collection(db, collectionName), where('email', '==', user.email)));
-            if (!querySnapshot.empty) stateSetter(querySnapshot.docs[0].data()[property]);
-        };
-
-        fetchData('User', setEditedUsername, 'username');
-        fetchData('Account', setEditedBio, 'bio');
-    };
+    const [imageList, setImageList] = useState([]);
+    const imageListRef = ref(storageRef, 'profile/');
 
     useEffect(() => {
-        fetchUserData();
+        const fetchData = async (collectionName, property) => {
+            const querySnapshot = await getDocs(query(collection(db, collectionName), where('email', '==', user.email)));
+            if (!querySnapshot.empty) {
+                setUserData(prevData => ({
+                    ...prevData,
+                    [property]: querySnapshot.docs[0].data()[property]
+                }));
+            }
+        };
+
+        fetchData('User', 'username');
+        fetchData('Account', 'bio');
+        fetchData('Account', 'profile_image');
+
+        listAll(imageListRef)
+            .then(response => Promise.all(response.items.map(item => getDownloadURL(item))))
+            .then(urls => setImageList(urls))
+            .catch(error => console.error('Error listing images:', error));
     }, [user]);
 
     const updateUserField = async (collectionName, property, value) => {
         const querySnapshot = await getDocs(query(collection(db, collectionName), where('email', '==', user.email)));
-        if (!querySnapshot.empty) await updateDoc(querySnapshot.docs[0].ref, { [property]: value });
+        if (!querySnapshot.empty) {
+            await updateDoc(querySnapshot.docs[0].ref, { [property]: value });
+        }
     };
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-        await updateUserField('User', 'username', editedUsername);
-        await updateUserField('Account', 'bio', editedBio);
+        await updateUserField('User', 'username', userData.username);
+        await updateUserField('Account', 'bio', userData.bio);
         alert('Updated');
-        fetchUserData();
     };
 
     const handleFileChange = async (event) => {
@@ -48,15 +57,16 @@ function Edit_Profile() {
                 await uploadBytes(imageRef, selectedFile);
                 const url = await getDownloadURL(imageRef);
                 console.log('Image URL:', url);
-                await updateUserField('Account', 'image_profile', selectedFile.name);
+                await updateUserField('Account', 'profile_image', selectedFile.name);
                 alert('Profile image updated successfully');
             } catch (error) {
                 console.error('Error uploading image:', error);
                 alert('An error occurred while updating the profile image: ' + error.message);
             }
         }
-    };
+    }
 
+    const imgURL = imageList.find(url => url.includes(userData.profile_image));
 
     return (
         <>
@@ -66,28 +76,35 @@ function Edit_Profile() {
                     <Modal.Dialog>
                         <Form onSubmit={handleUpdate}>
                             <Modal.Header>
-                                <Row>
-                                    <Col>
-                                        <Image className='profile_img' src="../../img/default_user_profile.png" roundedCircle />
-                                    </Col>
-                                    <Col>
-                                        <div>{user.email}</div>
-                                        <div className='change_pf_img_btn' onClick={() => fileInputRef.current.click()}>Change your profile image</div>
-                                        <input type='file' id='fileInput' ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} />
-                                    </Col>
-                                </Row>
+                                <Col sm='4' >
+                                    <Image className='profile_img' src={imgURL} roundedCircle />
+                                </Col>
+                                <Col sm='8' className='Modal_title' >
+                                    <div>{user.email}</div>
+
+                                    <div className='change_pf_img_btn' onClick={() => fileInputRef.current.click()}>Change your profile image</div>
+                                    <input type='file' id='fileInput' ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} />
+                                </Col>
                             </Modal.Header>
                             <Modal.Body>
                                 <Form.Group as={Row} className="mb-3" controlId="formUsername">
                                     <Form.Label column sm={2}>Username</Form.Label>
                                     <Col sm={10}>
-                                        <Form.Control type="text" value={editedUsername} onChange={(e) => setEditedUsername(e.target.value)} />
+                                        <Form.Control
+                                            type="text"
+                                            value={userData.username || ''}
+                                            onChange={e => setUserData({ ...userData, username: e.target.value })}
+                                        />
                                     </Col>
                                 </Form.Group>
                                 <Form.Group as={Row} className="mb-3" controlId="formBio">
                                     <Form.Label column sm={2}>Bio</Form.Label>
                                     <Col sm={10}>
-                                        <Form.Control type="text" value={editedBio} onChange={(e) => setEditedBio(e.target.value)} />
+                                        <Form.Control
+                                            type="text"
+                                            value={userData.bio || ''}
+                                            onChange={e => setUserData({ ...userData, bio: e.target.value })}
+                                        />
                                     </Col>
                                 </Form.Group>
                             </Modal.Body>
